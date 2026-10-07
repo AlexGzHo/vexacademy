@@ -1,11 +1,11 @@
 import type { BrandConfig } from '../types/index.ts'
 
 export const brandConfig: BrandConfig = {
-  name: 'Academia',
-  shortName: 'Academia',
-  tagline: 'Plataforma ligera de aprendizaje online',
+  name: 'VEX ACADEMY',
+  shortName: 'VEX',
+  tagline: 'Formación en programación, desarrollo de aplicaciones e inteligencia artificial',
   logoUrl: '',
-  supportEmail: 'soporte@academia.local',
+  supportEmail: 'soporte@vexacademy.com',
   url: 'http://localhost:5173',
   colors: {
     primary: '#2563eb',
