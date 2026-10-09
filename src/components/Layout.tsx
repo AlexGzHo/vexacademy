@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext.tsx'
 import { NotificationBell } from './NotificationBell.tsx'
 
 export function Layout() {
-  const { user, role, signOut, loading } = useAuth()
+  const { user, role, isPaymentReviewer, signOut, loading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -55,12 +55,12 @@ export function Layout() {
                   Mis Cursos
                 </NavLink>
 
-                {role === 'admin' && (
+                {(role === 'admin' || isPaymentReviewer) && (
                   <NavLink
                     to="/admin"
                     className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
                   >
-                    Admin
+                    {role === 'admin' ? 'Admin' : 'Pagos'}
                   </NavLink>
                 )}
 
@@ -144,12 +144,12 @@ export function Layout() {
                   Mis Cursos
                 </NavLink>
 
-                {role === 'admin' && (
+                {(role === 'admin' || isPaymentReviewer) && (
                   <NavLink
                     to="/admin"
                     className={({ isActive }) => (isActive ? 'mobile-nav-link active' : 'mobile-nav-link')}
                   >
-                    Admin
+                    {role === 'admin' ? 'Admin' : 'Pagos'}
                   </NavLink>
                 )}
 

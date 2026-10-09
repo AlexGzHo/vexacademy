@@ -255,37 +255,20 @@ export function AdminPage() {
 
   return (
     <section className="page-section">
-      <div className="section-header">
-        <div className="catalog-header-badge">
-          <span>Administración Central</span>
-        </div>
-        <h1>Panel de Gestión Educativa</h1>
-        <p className="subtitle">
-          Administración de cursos, módulos, lecciones, precios y contenidos en {brandConfig.name}.
+      <div className="section-header" style={{ marginBottom: '1rem' }}>
+        <h1 style={{ fontSize: '1.75rem', marginBottom: '0.25rem' }}>Panel de Administración</h1>
+        <p className="subtitle" style={{ fontSize: '0.9rem', marginTop: 0 }}>
+          Gestión educativa y financiera de {brandConfig.name}.
         </p>
       </div>
 
       {/* Pestañas de Navegación del Panel */}
-      <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--color-border)', marginBottom: '1.5rem' }}>
+      <div className="editor-tabs-bar" style={{ marginBottom: '1.5rem' }}>
         {role === 'admin' && (
           <button
             type="button"
             onClick={() => setActiveTab('courses')}
-            style={{
-              padding: '0.75rem 1.25rem',
-              fontWeight: 600,
-              fontSize: '0.95rem',
-              borderBottom: activeTab === 'courses' ? '3px solid var(--color-primary)' : '3px solid transparent',
-              color: activeTab === 'courses' ? 'var(--color-primary)' : 'var(--color-text-muted)',
-              background: 'none',
-              borderLeft: 'none',
-              borderRight: 'none',
-              borderTop: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
+            className={`editor-tab-btn ${activeTab === 'courses' ? 'active' : ''}`}
           >
             <BookOpen size={18} />
             Gestión de Cursos
@@ -299,34 +282,21 @@ export function AdminPage() {
               setActiveTab('payments')
               setGlobalToast(null)
             }}
-            style={{
-              padding: '0.75rem 1.25rem',
-              fontWeight: 600,
-              fontSize: '0.95rem',
-              borderBottom: activeTab === 'payments' ? '3px solid var(--color-primary)' : '3px solid transparent',
-              color: activeTab === 'payments' ? 'var(--color-primary)' : 'var(--color-text-muted)',
-              background: 'none',
-              borderLeft: 'none',
-              borderRight: 'none',
-              borderTop: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
+            className={`editor-tab-btn ${activeTab === 'payments' ? 'active' : ''}`}
           >
             <CreditCard size={18} />
             Pagos Yape / Plin
             {pendingCount > 0 && (
               <span
                 style={{
-                  background: 'var(--color-ember, #f54e00)',
+                  background: 'var(--color-ember)',
                   color: '#ffffff',
                   fontSize: '0.75rem',
                   fontWeight: 700,
                   borderRadius: '9999px',
                   padding: '0.15rem 0.55rem',
                   lineHeight: 1,
+                  marginLeft: '0.25rem'
                 }}
                 title={`${pendingCount} solicitud(es) pendiente(s)`}
               >
@@ -454,7 +424,7 @@ export function AdminPage() {
             <tbody>
               {filteredCourses.map((c) => (
                 <tr key={c.id}>
-                  <td>
+                  <td data-label="Curso">
                     <div className="course-table-cell">
                       {c.thumbnail_url ? (
                         <img
@@ -474,20 +444,20 @@ export function AdminPage() {
                     </div>
                   </td>
 
-                  <td>
+                  <td data-label="Nivel">
                     <span className={`course-badge badge-${c.level.toLowerCase()}`}>
                       {c.level}
                     </span>
                   </td>
 
-                  <td>
+                  <td data-label="Estructura">
                     <div className="table-structure">
                       <span>{c.modules_count || 0} módulos</span>
                       <span className="text-muted">&bull; {c.lessons_count || 0} lecciones</span>
                     </div>
                   </td>
 
-                  <td>
+                  <td data-label="Precio (PEN)">
                     {c.is_free || c.price_pen === 0 ? (
                       <span className="badge badge-free">Gratis</span>
                     ) : (
@@ -495,7 +465,7 @@ export function AdminPage() {
                     )}
                   </td>
 
-                  <td>
+                  <td data-label="Estado">
                     <button
                       type="button"
                       onClick={() => handleTogglePublish(c)}
@@ -516,7 +486,7 @@ export function AdminPage() {
                     </button>
                   </td>
 
-                  <td style={{ textAlign: 'right' }}>
+                  <td data-label="Acciones" style={{ textAlign: 'right' }}>
                     <div className="table-actions-group">
                       <Link
                         to={`/courses/${c.id}`}

@@ -532,7 +532,7 @@ export function PaymentManagement() {
         </div>
 
         <div className="admin-filters-wrap">
-          <div style={{ display: 'flex', gap: '0.5rem', background: '#f1f5f9', padding: '0.25rem', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', background: '#f1f5f9', padding: '0.25rem', borderRadius: '8px' }}>
             <button
               type="button"
               onClick={() => setStatusFilter('pending')}
@@ -603,7 +603,7 @@ export function PaymentManagement() {
             <tbody>
               {filteredRequests.map((req) => (
                 <tr key={req.id}>
-                  <td>
+                  <td data-label="Estudiante">
                     <div>
                       <strong>{req.profile?.full_name || 'Estudiante VEX'}</strong>
                       <div className="table-slug" style={{ fontSize: '0.75rem', color: '#64748b' }}>
@@ -612,11 +612,11 @@ export function PaymentManagement() {
                     </div>
                   </td>
 
-                  <td>
+                  <td data-label="Curso">
                     <strong>{req.course?.title || 'Curso'}</strong>
                   </td>
 
-                  <td>
+                  <td data-label="Método / Importe">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                       <span
                         className="badge"
@@ -633,7 +633,7 @@ export function PaymentManagement() {
                     </div>
                   </td>
 
-                  <td>
+                  <td data-label="Fecha de Reporte">
                     <span style={{ fontSize: '0.85rem' }}>
                       {new Date(req.created_at).toLocaleString('es-PE', {
                         day: '2-digit',
@@ -645,7 +645,7 @@ export function PaymentManagement() {
                     </span>
                   </td>
 
-                  <td>
+                  <td data-label="Estado">
                     {req.status === 'pending' && (
                       <span className="badge badge-preview" style={{ background: '#fef3c7', color: '#92400e' }}>
                         Pendiente
@@ -663,7 +663,7 @@ export function PaymentManagement() {
                     )}
                   </td>
 
-                  <td>
+                  <td data-label="Comprobante">
                     <button
                       type="button"
                       onClick={() => handleViewProof(req.proof_url)}
@@ -675,7 +675,7 @@ export function PaymentManagement() {
                     </button>
                   </td>
 
-                  <td style={{ textAlign: 'right' }}>
+                  <td data-label="Acciones" style={{ textAlign: 'right' }}>
                     {req.status === 'pending' ? (
                       <div className="table-actions-group" style={{ justifyContent: 'flex-end' }}>
                         <button
