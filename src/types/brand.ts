@@ -8,6 +8,13 @@ export interface BrandColors {
   border: string
 }
 
+export interface PaymentInfo {
+  yapeNumber: string
+  plinNumber: string
+  accountHolder: string
+  instructions: string
+}
+
 export interface BrandConfig {
   name: string
   shortName: string
@@ -16,5 +23,7 @@ export interface BrandConfig {
   supportEmail: string
   url: string
   colors: BrandColors
+  paymentInfo: PaymentInfo
 }
+
 

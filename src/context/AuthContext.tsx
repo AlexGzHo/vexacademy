@@ -21,6 +21,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true)
   const [roleLoading, setRoleLoading] = useState<boolean>(false)
 
+  const [isPaymentReviewer, setIsPaymentReviewer] = useState<boolean>(false)
+
   // Referencia para evitar condiciones de carrera entre cambios rápidos de sesión
   const activeUserIdRef = useRef<string | null>(null)
 
@@ -33,6 +35,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('user_id', userId)
         .maybeSingle()
 
+      // Consultar también si es encargado de pago en public.payment_reviewers
+      const { data: reviewerData } = await supabase
+        .from('payment_reviewers')
+        .select('user_id')
+        .eq('user_id', userId)
+        .maybeSingle()
+
       // Si el usuario cambió mientras la consulta estaba en vuelo, descartar el resultado
       if (activeUserIdRef.current !== userId) {
         return
@@ -40,21 +49,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) {
         console.error('[AuthContext] Error al consultar rol en user_roles:', error.message)
-        // Regla estricta: ante error nunca asignar privilegios de admin por defecto
         setRole(null)
+        setIsPaymentReviewer(false)
         return
       }
 
-      if (data && (data.role === 'admin' || data.role === 'student')) {
-        setRole(data.role)
-      } else {
-        // Si no existe rol explícito registrado, no asumir privilegios
-        setRole(null)
-      }
+      const userRole = data?.role === 'admin' || data?.role === 'student' ? data.role : null
+      setRole(userRole)
+      setIsPaymentReviewer(userRole === 'admin' || Boolean(reviewerData))
     } catch (err) {
       console.error('[AuthContext] Excepción inesperada al cargar rol:', err)
       if (activeUserIdRef.current === userId) {
         setRole(null)
+        setIsPaymentReviewer(false)
       }
     } finally {
       if (activeUserIdRef.current === userId) {
@@ -62,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
   }, [])
+
 
   useEffect(() => {
     // 1. Suscribirse a los cambios de estado de autenticación de Supabase
@@ -102,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user?.id) {
       await fetchUserRole(user.id)
     }
-  }, [user?.id, fetchUserRole])
+  }, [user, fetchUserRole])
 
   const signIn = useCallback(async (email: string, password: string) => {
     try {
@@ -159,6 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
     setSession(null)
     setRole(null)
+    setIsPaymentReviewer(false)
     setRoleLoading(false)
     await supabase.auth.signOut()
   }, [])
@@ -168,6 +177,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       session,
       role,
+      isPaymentReviewer,
       loading,
       roleLoading,
       signIn,
@@ -175,8 +185,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut,
       refreshRole,
     }),
-    [user, session, role, loading, roleLoading, signIn, signUp, signOut, refreshRole],
+    [user, session, role, isPaymentReviewer, loading, roleLoading, signIn, signUp, signOut, refreshRole],
   )
+
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -8,11 +8,13 @@ import type { AppRole } from '../types/index.ts'
 interface ProtectedRouteProps {
   children: ReactNode
   allowedRoles?: AppRole[]
+  allowReviewer?: boolean
 }
 
-export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, role, loading, roleLoading } = useAuth()
+export function ProtectedRoute({ children, allowedRoles, allowReviewer }: ProtectedRouteProps) {
+  const { user, role, isPaymentReviewer, loading, roleLoading } = useAuth()
   const location = useLocation()
+
 
   // 1. Estado de carga de sesión inicial
   if (loading) {
@@ -41,9 +43,13 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       )
     }
 
-    // Si el rol ya terminó de cargar pero no coincide con los autorizados
-    if (!role || !allowedRoles.includes(role)) {
+    // Si el rol ya terminó de cargar pero no coincide con los autorizados (a menos que sea un revisor permitido)
+    const isAllowedByRole = role && allowedRoles.includes(role)
+    const isAllowedByReviewer = allowReviewer && isPaymentReviewer
+
+    if (!isAllowedByRole && !isAllowedByReviewer) {
       return (
+
         <section className="page-section">
           <div className="access-denied-card">
             <ShieldAlert size={48} className="access-denied-icon" />

@@ -203,7 +203,19 @@ CREATE POLICY "user_roles_select_own"
   USING (auth.uid() = user_id);
 
 -- ==============================================================================
--- 10. PROCEDIMIENTO MANUAL PARA ASIGNAR ADMINISTRADORES
+-- 10. PUBLICACIÓN REALTIME DE PAGOS PENDIENTES
+-- ==============================================================================
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.payment_requests;
+  END IF;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
+
+-- ==============================================================================
+-- 11. PROCEDIMIENTO MANUAL PARA ASIGNAR ADMINISTRADORES
 -- Para convertir un usuario en administrador, ejecutar manualmente en el
 -- SQL Editor de Supabase (reemplazando por el correo correspondiente):
 --
@@ -211,3 +223,4 @@ CREATE POLICY "user_roles_select_own"
 -- SET role = 'admin'
 -- WHERE user_id = (SELECT id FROM auth.users WHERE email = 'tu_correo_admin@dominio.com');
 -- ==============================================================================
+

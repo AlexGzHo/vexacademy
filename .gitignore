@@ -25,3 +25,13 @@ dist-ssr
 
 # Repositorios usados únicamente como referencia local
 /references/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Temporary and build files
+supabase/.temp/
+temp_top.txt
+temp_bottom.txt

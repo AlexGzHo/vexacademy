@@ -20,6 +20,7 @@ export interface AuthContextType {
   user: User | null
   session: Session | null
   role: AppRole | null
+  isPaymentReviewer: boolean
   loading: boolean
   roleLoading: boolean
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
